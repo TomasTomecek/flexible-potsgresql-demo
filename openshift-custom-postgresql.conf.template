@@ -19,5 +19,6 @@ shared_buffers = ${POSTGRESQL_SHARED_BUFFERS}
 
 # Sets the planner's assumption about the effective size of the disk cache that is available to a single query
 effective_cache_size = ${POSTGRESQL_EFFECTIVE_CACHE_SIZE}
-temp_buffers = 64MB
-work_mem = 64MB
+
+# Let’s increase work_mem so most operations are performed in memory
+work_mem = ${POSTGRESQL_WORK_MEM}
