@@ -1,4 +1,4 @@
-.PHONY: default build run
+.PHONY: default build run inject show_work_mem pull-upstream-image
 CONTAINER_NAME := pg
 IMAGE_NAME := $(USER)/postgresql
 UPSTREAM_IMAGE_NAME := registry.access.redhat.com/rhscl/postgresql-95-rhel7:latest
@@ -25,5 +25,10 @@ inject:
 show_work_mem:
 	docker exec $(CONTAINER_NAME) bash -c 'psql --command "show work_mem;"'
 
-$(TEMPLATE_FILENAME):
+$(TEMPLATE_FILENAME): pull-upstream-image
+	docker create --name $(CONTAINER_NAME) $(UPSTREAM_IMAGE_NAME)
 	docker cp $(CONTAINER_NAME):$(TEMPLATE_PATH) $(TEMPLATE_FILENAME)
+	docker rm $(CONTAINER_NAME)
+
+pull-upstream-image:
+	docker pull $(UPSTREAM_IMAGE_NAME)
