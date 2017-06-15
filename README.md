@@ -62,7 +62,7 @@ So we copied the default template config and added a way to set `work_mem` by ap
 work_mem = ${POSTGRESQL_WORK_MEM}
 ```
 
-and then, we can change the `work_mem` parameter by specifying it as en envinronment variable:
+and then, we can change the `work_mem` parameter by specifying it as en environment variable:
 
 ```
 docker run --rm \
@@ -86,7 +86,7 @@ We will continue with pulling the upstream image `registry.access.redhat.com/rhs
 $ make pull-upstream-image
 ```
 
-We would now copy the default template configuration file. It's already present in the repository so you can check it out (it already contains the `work_mem` cheanges).
+We would now copy the default template configuration file. It's already present in the repository so you can check it out (it already contains the `work_mem` changes).
 
 ```
 $ cat ./openshift-custom-postgresql.conf.template
