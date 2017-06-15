@@ -19,14 +19,14 @@ The effort of extending images is focused on these aspects:
 
 It's not easy to do what the user story above states. Especially because:
 
-1. As a user, you have no idea how the service is installed within a container image.
-  * This is way more complicated with Software Collections -- is the config in `/etc` or `/opt`?
+ 1. As a user, you have no idea how the service is installed within a container image.
+   * This is way more complicated with Software Collections -- is the config in `/etc` or `/opt`?
 
-2. Container image is black-box with clearly defined API.
-  * If the API is not set, then it's just trial & error while hoping it would work with next update.
+ 2. Container image is black-box with clearly defined API.
+   * If the API is not set, then it's just trial & error while hoping it would work with next update.
 
-3. If I mount a config, will the entrypoint script process it correctly?
-  * Even worse: do I need to read and understand how the entrypoint script works?
+ 3. If I mount a config, will the entrypoint script process it correctly?
+   * Even worse: do I need to read and understand how the entrypoint script works?
 
 
 If we start offering a way to extend images as an API, then everyone will be able to configure the containerized services easily. So let's proceed with the demo.
