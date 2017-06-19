@@ -105,3 +105,8 @@ Let's inspect the runtime configuration of our containerized postgres:
 ```
 $ make show-work-mem
 ```
+
+As you can see we just changed configuration of postgres and we can be sure
+that it will work the same way in the future. We could do our own flavor of
+PostgreSQL container image containing our custom configuration to make it fully
+portable.
