@@ -103,7 +103,7 @@ $ make inject
 Let's inspect the runtime configuration of our containerized postgres:
 
 ```
-$ make show-work-mem
+$ make show_work_mem
 ```
 
 As you can see we just changed configuration of postgres and we can be sure
