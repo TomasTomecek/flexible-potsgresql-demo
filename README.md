@@ -86,27 +86,52 @@ We will continue with pulling the upstream image `registry.access.redhat.com/rhs
 $ make pull-upstream-image
 ```
 
-We would now copy the default template configuration file. It's already present in the repository so you can check it out (it already contains the `work_mem` changes).
+In order to change some runtime configuration in the config file, we need to get the config file first:
 
 ```
-$ cat ./openshift-custom-postgresql.conf.template
+$ docker create --name pg registry.access.redhat.com/rhscl/postgresql-95-rhel7:latest
+$ docker cp pg:/usr/share/container-scripts/postgresql/openshift-custom-postgresql.conf.template openshift-custom-postgresql.conf.template
+$ sudo chown $(whoami) ./openshift-custom-postgresql.conf.template
+$ docker rm pg
 ```
 
-You can also inspect make rule to obtain the file (`make openshift-custom-postgresql.conf.template`).
+(there is [an upstream
+PR](https://github.com/sclorg/postgresql-container/pull/177) pending so the
+PostgreSQL container image documents this behavior)
 
-We can now run postgres and change `work_mem` to `128M`:
+This is just a template which is sourced from the main config.
 
-```
-$ make inject
-```
-
-Let's inspect the runtime configuration of our containerized postgres:
+Let's say we want to be able to change the parameter `work_mem`. So we will add it to the template:
 
 ```
-$ make show_work_mem
+$ printf "\nwork_mem = \${POSTGRESQL_WORK_MEM}\n" >>openshift-custom-postgresql.conf.template
 ```
 
-As you can see we just changed configuration of postgres and we can be sure
+We have the updated template file now. Let's feed it into the PostgreSQL container.
+
+```
+$ docker run --rm -e POSTGRESQL_USER=pg_test -e POSTGRESQL_PASSWORD=secret -e POSTGRESQL_DATABASE=test_db \
+        -v openshift-custom-postgresql.conf.template:/usr/share/container-scripts/postgresql/ \
+        -e POSTGRESQL_WORK_MEM=128MB \
+        --name pg registry.access.redhat.com/rhscl/postgresql-95-rhel7:latest
+```
+
+There are two imporant options here:
+
+1. `-v open...` — with this option we mount our config template into the container
+2. `-e POSTGRESQL_WORK_MEM=128MB` — and this is how we set `work_mem` parameter to value of our choice
+
+Let's inspect the runtime configuration of our containerized postgres and see if `work_mem` is configured correctly:
+
+```
+$ docker exec pg bash -c 'psql --command "show work_mem;"'
+ work_mem
+----------
+ 128MB
+(1 row)
+```
+
+As you can see, we just changed configuration of postgres and we can be sure
 that it will work the same way in the future. We could do our own flavor of
 PostgreSQL container image containing our custom configuration to make it fully
 portable.
