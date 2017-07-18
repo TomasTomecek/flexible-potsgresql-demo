@@ -22,12 +22,13 @@ inject:
 		-e POSTGRESQL_WORK_MEM=128MB \
 		--name $(CONTAINER_NAME) $(UPSTREAM_IMAGE_NAME)
 
-show_work_mem:
+show-work-mem:
 	docker exec $(CONTAINER_NAME) bash -c 'psql --command "show work_mem;"'
 
 $(TEMPLATE_FILENAME): pull-upstream-image
 	docker create --name $(CONTAINER_NAME) $(UPSTREAM_IMAGE_NAME)
 	docker cp $(CONTAINER_NAME):$(TEMPLATE_PATH) $(TEMPLATE_FILENAME)
+	sudo chown $(shell whoami) $(TEMPLATE_FILENAME)
 	docker rm $(CONTAINER_NAME)
 
 pull-upstream-image:
