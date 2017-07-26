@@ -66,9 +66,9 @@ and then, we can change the `work_mem` parameter by specifying it as en environm
 
 ```
 docker run --rm \
-	-v openshift-custom-postgresql.conf.template:/usr/share/container-scripts/postgresql/ \
-	-e POSTGRESQL_WORK_MEM=128MB \
-	...
+    -v ${PWD}/openshift-custom-postgresql.conf.template:/usr/share/container-scripts/postgresql/openshift-custom-postgresql.conf.template \
+    -e POSTGRESQL_WORK_MEM=128MB \
+    ...
 ```
 
 ### Workflow
@@ -111,14 +111,14 @@ We have the updated template file now. Let's feed it into the PostgreSQL contain
 
 ```
 $ docker run --rm -e POSTGRESQL_USER=pg_test -e POSTGRESQL_PASSWORD=secret -e POSTGRESQL_DATABASE=test_db \
-        -v openshift-custom-postgresql.conf.template:/usr/share/container-scripts/postgresql/ \
+        -v ${PWD}/openshift-custom-postgresql.conf.template:/usr/share/container-scripts/postgresql/openshift-custom-postgresql.conf.template \
         -e POSTGRESQL_WORK_MEM=128MB \
         --name pg registry.access.redhat.com/rhscl/postgresql-95-rhel7:latest
 ```
 
 There are two imporant options here:
 
-1. `-v open...` — with this option we mount our config template into the container
+1. `-v ${PWD}/open...` — with this option we mount our config template into the container
 2. `-e POSTGRESQL_WORK_MEM=128MB` — and this is how we set `work_mem` parameter to value of our choice
 
 Let's inspect the runtime configuration of our containerized postgres and see if `work_mem` is configured correctly:
